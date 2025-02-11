@@ -33,6 +33,7 @@ class Transport {
 
 class Bus extends Transport {
     private int capacity;
+    private List<Passenger> passengers = new ArrayList<>();
 
     public Bus(String model, String registrationNumber, int capacity) {
         super(model, registrationNumber);
@@ -47,9 +48,22 @@ class Bus extends Transport {
         this.capacity = capacity;
     }
 
+    public List<Passenger> getPassengers() {
+        return passengers;
+    }
+
+    public boolean addPassenger(Passenger passenger) {
+        if (passengers.size() < capacity) {
+            passengers.add(passenger);
+            return true;
+        }
+        return false; // Bus is full
+    }
+
     @Override
     public String toString() {
-        return "Bus [Model=" + getModel() + ", Registration Number=" + getRegistrationNumber() + ", Capacity=" + capacity + "]";
+        return "Bus [Model=" + getModel() + ", Registration Number=" + getRegistrationNumber() +
+                ", Capacity=" + capacity + ", Passengers=" + passengers.size() + "]";
     }
 
     @Override
@@ -66,45 +80,47 @@ class Bus extends Transport {
     }
 }
 
-class TransportService {
-    private List<Transport> transports = new ArrayList<>();
+class Passenger {
+    private String name;
+    private int age;
 
-    public void addTransport(Transport transport) {
-        transports.add(transport);
+    public Passenger(String name, int age) {
+        this.name = name;
+        this.age = age;
     }
 
-    public void displayAllTransports() {
-        for (Transport transport : transports) {
-            System.out.println(transport);
-        }
+    public String getName() {
+        return name;
     }
 
-    public Transport findTransportByRegistrationNumber(String registrationNumber) {
-        for (Transport transport : transports) {
-            if (transport.getRegistrationNumber().equals(registrationNumber)) {
-                return transport;
-            }
-        }
-        return null;
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Passenger [Name=" + name + ", Age=" + age + "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Passenger passenger = (Passenger) obj;
+        return name.equals(passenger.name) && age == passenger.age;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
     }
 }
 
-public class Main {
-    public static void main(String[] args) {
-        TransportService service = new TransportService();
-
-        Transport bus1 = new Bus("Mercedes", "AB1234", 50);
-        Transport bus2 = new Bus("Volvo", "CD5678", 40);
-
-        service.addTransport(bus1);
-        service.addTransport(bus2);
-
-        System.out.println("All Transports:");
-        service.displayAllTransports();
-
-        System.out.println("\nFinding transport with registration number 'CD5678':");
-        System.out.println(service.findTransportByRegistrationNumber("CD5678"));
-        System.out.println("\nFinding transport with registration number 'CD1223':");
-        System.out.println(service.findTransportByRegistrationNumber("CD1223"));
-    }
-}
